@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team, only: %i[show edit update destroy]
+  before_action :owner_user,only: %i[edit destroy]
 
   def index
     @teams = Team.all
@@ -55,5 +56,12 @@ class TeamsController < ApplicationController
 
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
+  end
+
+  def owner_user
+    if @team.owner_id != current_user.id || current_user.id != assigned_user.id
+      flash[:notice]="権限がありません"
+      redirect_to teams_url
+    end
   end
 end
