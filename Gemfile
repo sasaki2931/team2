@@ -11,6 +11,10 @@ gem 'rails', '6.0.3'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 
+
+
+
+
 # Frontend
 gem 'coderay'
 gem 'jquery-rails'
