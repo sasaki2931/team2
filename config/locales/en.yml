@@ -241,6 +241,7 @@ en:
       post_comment: 'Post a comment'
       initial_assign: 'Your email address has been assigned to the DIVEINTOPOST team!'
       initial_password: 'Initial Password:'
+      initial_owner_assign: 'you are the team owner'
       author: 'Author'
       delete_comment: 'Delete the comment'
       edit_comment: 'Edit the comment'
