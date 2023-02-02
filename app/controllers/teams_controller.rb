@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_team, only: %i[show edit update destroy]
+  
 
   def index
     @teams = Team.all
@@ -15,7 +16,9 @@ class TeamsController < ApplicationController
     @team = Team.new
   end
 
-  def edit; end
+  def edit
+    redirect_to team_path(@team), notice: "リーダー以外は編集できません" unless current_user == @team.owner
+  end
 
   def create
     @team = Team.new(team_params)
@@ -39,8 +42,14 @@ class TeamsController < ApplicationController
   end
 
   def destroy
-    @team.destroy
-    redirect_to teams_url, notice: I18n.t('views.messages.delete_team')
+    assign = Assign.find(params[:id])
+    unless (current_user == assign.team.owner) || (current_user == assign.user)
+      redirect_to team_url(params[:team_id]), notice: "リーダーか本人以外は削除できません"
+      return
+    end
+    destroy_message = assign_destroy(assign, assign.user)
+    redirect_to team_url(params[:team_id]), notice: destroy_message
+
   end
 
   def dashboard
@@ -56,4 +65,6 @@ class TeamsController < ApplicationController
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
   end
+
+  
 end
