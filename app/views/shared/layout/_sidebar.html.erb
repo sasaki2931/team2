@@ -31,12 +31,14 @@
         <% @working_team.agendas.each do |agenda| %>
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link">
-              <i class="fa fa-circle-o nav-icon"></i>
-              <p>
-                <%= agenda.title %>
-                <i class="right fa fa-angle-left"></i>
-              </p>
+            <i class="fa fa-circle-o nav-icon"></i>
+            <p>
+            <%= agenda.title %>
+            <object><%= link_to I18n.t('views.button.delete'), agenda_path(agenda), method: :delete, class: 'btn btn-sm btn-danger' %></object>
+            <i class="right fa fa-angle-left"></i>
+            </p>
             </a>
+            
             <ul class="nav nav-treeview" style="display: block;">
               <% agenda.articles.each do |article| %>
                 <li class="nav-item">
@@ -45,8 +47,10 @@
                   <% end %>
                 </li>
               <% end %>
+
               <li class="nav-item">
                 <%= link_to new_agenda_article_path(agenda), class: 'nav-link' do %>
+                  
                   <p>+ <%= I18n.t('views.messages.create_article') %></p>
                 <% end %>
               </li>
@@ -54,6 +58,7 @@
           </li>
         <% end %>
       </ul>
+      
     </nav>
     <!-- /.sidebar-menu -->
   </div>
