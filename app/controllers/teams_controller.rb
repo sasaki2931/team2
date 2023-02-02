@@ -1,6 +1,7 @@
 class TeamsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_team, only: %i[show edit update destroy]
+  before_action :set_team, only: %i[show edit update destroy assign_owner]
+  before_action :owner_user,only: %i[edit destroy]
 
   def index
     @teams = Team.all
@@ -47,6 +48,13 @@ class TeamsController < ApplicationController
     @team = current_user.keep_team_id ? Team.find(current_user.keep_team_id) : current_user.teams.first
   end
 
+  def assign_owner
+    @team.update(owner_id: params[:owner_id])
+    @user = User.find(@team.owner_id)
+    ChangeMailer.change_mail(@user).deliver
+    redirect_to team_path notice: 'オーナー権限が移動しました!'
+  end
+
   private
 
   def set_team
@@ -55,5 +63,12 @@ class TeamsController < ApplicationController
 
   def team_params
     params.fetch(:team, {}).permit %i[name icon icon_cache owner_id keep_team_id]
+  end
+
+  def owner_user
+    if @team.owner_id != current_user.id || current_user.id != assigned_user.id
+      flash[:notice]="権限がありません"
+      redirect_to teams_url
+    end
   end
 end
